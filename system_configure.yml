@@ -19,6 +19,7 @@
           - ghostscript
           - PackageKit-command-not-found
         state: absent
+
 - name: Update packages
   hosts: localhost
   gather_facts: false
@@ -28,3 +29,27 @@
       ansible.builtin.dnf:
         name: '*'
         state: latest
+
+- name: Remove Gnome
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Gather package facts to see if gnome is installed
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Remove gnome-shell from protected packages
+      become: true
+      when: "'gnome-shell' in ansible_facts.packages"
+      ansible.builtin.lineinfile:
+        path: /etc/dnf/protected.d/fedora-workstation.conf
+        search_string: "gnome-shell"
+        state: absent
+
+    - name: Remove all gnome packages
+      become: true
+      when: "'gnome-shell' in ansible_facts.packages"
+      ansible.builtin.dnf:
+        name: '*gnome*'
+        state: absent
+        
