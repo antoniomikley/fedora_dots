@@ -1,0 +1,30 @@
+- name: Configure dnf
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Copy dnf config
+      become: true
+      ansible.builtin.copy:
+        src: ./dnf.conf
+        dest: /etc/dnf/dnf.conf
+
+- name: Cleanup Packages
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Cleanup system by removing unwanted packages
+      become: true
+      ansible.builtin.dnf:
+        name:
+          - ghostscript
+          - PackageKit-command-not-found
+        state: absent
+- name: Update packages
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Update installed Packages
+      become: true
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
