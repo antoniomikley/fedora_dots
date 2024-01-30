@@ -53,3 +53,15 @@
         name: '*gnome*'
         state: absent
         
+- name: Install DisplayManager
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Install lightdm
+      become: true
+      ansible.builtin.dnf:
+        name:
+          - lightdm
+          - light-locker
+          - slick-greeter
+        state: present
