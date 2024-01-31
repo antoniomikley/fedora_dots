@@ -1,4 +1,4 @@
-- name: Cnfigure dnf
+- name: Configure dnf
   hosts: localhost
   gather_facts: false
   tasks:
@@ -145,6 +145,23 @@
       ansible.builtin.copy:
         src: ./zellij.kdl
         dest: ~/.config/zellij/config.kdl
+
+- name: Setup neovim
+  hosts: localhost
+  gather_facts: false
+  task: 
+    - name: Install neovim
+      become: true
+      register: nvim
+      ansible.builtin.dnf:
+        name: neovim
+        state: present
+    - name: Copy neovim config
+      when: nvim.changed
+      ansible.builtin.copy:
+        src: ./nvim
+        dest: ~/.config/
+
 
 
 

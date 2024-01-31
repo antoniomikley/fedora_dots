@@ -13,8 +13,22 @@ keybinds clear-defaults=true {
     }
 }
 
-theme "rose-pine"
+theme "oxocarbon"
 themes {
+    oxocarbon {
+	fg "#dde16e"
+	bg "#161616"
+	black "#262626"
+	red "#ff7eb6"
+	green "#42be65"
+	yellow "#82cfff"
+	blue "#33b1ff"
+	magenta "#ee5396"
+	cyan "#3ddbd9"
+	white "#dde1e6"
+	orange "#fe640b"
+    }
+
     everforrest {
         fg "#d8cacc"
         bg "#323d43"
