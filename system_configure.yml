@@ -1,4 +1,4 @@
-- name: Configure dnf
+- name: Cnfigure dnf
   hosts: localhost
   gather_facts: false
   tasks:
@@ -84,7 +84,41 @@
       ansible.builtin.copy:
         src: ./awesome
         dest: ~/.config/
-      
+
+
+#- name: Install nerd font
+#  hosts: localhost
+#  gather_facts: false
+#  tasks:
+#    - name: Create font directory
+#      become: true
+#      register: dir
+#      ansible.builtin.file:
+#        path: /usr/share/fonts/Monaspace
+#        state: directory
+#    - name: Download and unpack font
+#      become: true
+#      when: dir.changed
+#      ansible.builtin.unarchive:
+#        src: https://
+#        dest: /usr/share/fonts/Monaspace
+#        remote_src: true
+
+- name: Setup terminal emulator
+  hosts: localhost
+  gaher_facts: false
+  tasks: 
+    - name: Install kitty terminal
+      become: true
+      register: terminal
+      ansible.builtin.dnf:
+        name: kitty
+        state: present
+    - name:
+      when: terminal.changed
+      ansible.builtin.copy:
+        src: ./kitty.conf
+        dest: ~/.config/kitty/
 
 
 
