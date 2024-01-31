@@ -65,3 +65,29 @@
           - light-locker
           - slick-greeter
         state: present
+
+- name: Setup window manager
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Gather package facts to see if awesome is already installed
+      ansible.builtin.package_facts:
+        manager: auto
+    - name: Install awesome window manager
+      become: true
+      when: "'awesome' not in ansible_facts.packages"
+      ansible.builtin.dnf:
+        name: awesome
+        state: present
+    - name: Copy awesome config
+      when: "'awesome' not in ansible_facts.packages"
+      ansible.builtin.copy:
+        src: ./awesome
+        dest: ~/.config/
+      
+
+
+
+
+
+
