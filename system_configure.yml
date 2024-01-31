@@ -37,7 +37,6 @@
     - name: Gather package facts to see if gnome is installed
       ansible.builtin.package_facts:
         manager: auto
-
     - name: Remove gnome-shell from protected packages
       become: true
       when: "'gnome-shell' in ansible_facts.packages"
@@ -45,7 +44,6 @@
         path: /etc/dnf/protected.d/fedora-workstation.conf
         search_string: "gnome-shell"
         state: absent
-
     - name: Remove all gnome packages
       become: true
       when: "'gnome-shell' in ansible_facts.packages"
@@ -73,18 +71,20 @@
     - name: Gather package facts to see if awesome is already installed
       ansible.builtin.package_facts:
         manager: auto
-    - name: Install awesome window manager
+    - name: Install awesome window manager and dmenu
       become: true
       when: "'awesome' not in ansible_facts.packages"
       ansible.builtin.dnf:
-        name: awesome
+        name: 
+          - awesome
+            lob
+          - dmenu
         state: present
     - name: Copy awesome config
       when: "'awesome' not in ansible_facts.packages"
       ansible.builtin.copy:
         src: ./awesome
         dest: ~/.config/
-
 
 #- name: Install nerd font
 #  hosts: localhost
@@ -106,7 +106,7 @@
 
 - name: Setup terminal emulator
   hosts: localhost
-  gaher_facts: false
+  gather_facts: false
   tasks: 
     - name: Install kitty terminal
       become: true
@@ -120,6 +120,31 @@
         src: ./kitty.conf
         dest: ~/.config/kitty/
 
+- name: Setup terminal multiplexer
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Enable zellij copr
+      become: true
+      community.general.copr:
+        name: varlad/zellij
+        state: enabled
+    - name: Install zellij
+      become: true
+      register: zellij
+      ansible.builtin.dnf:
+        name: zellij
+        state: present
+    - name: Create config directory
+      when: zellij.changed
+      ansible.builtin.file:
+        path: ~/.config/zellij
+        state: directory
+    - name: Copy zellij config
+      when: zellij.changed
+      ansible.builtin.copy:
+        src: ./zellij.kdl
+        dest: ~/.config/zellij/config.kdl
 
 
 

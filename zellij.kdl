@@ -1,0 +1,44 @@
+pane_frames false
+default_layout "compact"
+session_serialization false
+keybinds clear-defaults=true {
+    normal {
+        bind "Alt t" { NewTab; }
+        bind "Alt g" { NewPane "Right"; }
+        bind "Alt q" { CloseFocus; }
+        bind "Alt f" { ToggleFloatingPanes; }
+        bind "Alt s" { ToggleTab; }
+        bind "Alt r" { FocusNextPane; }
+        bind "Alt a" { EditScrollback; }
+    }
+}
+
+theme "rose-pine"
+themes {
+    everforrest {
+        fg "#d8cacc"
+        bg "#323d43"
+        black "#4a555b"
+        red "#e68183"
+        green "#a7c080"
+        yellow "#dbbc7f"
+        blue "#7fbbb3"
+        magenta "#d699b6"
+        cyan "#83c092"
+        white "#d8caac"
+        orange "#E69875"
+    }
+    rose-pine {
+		bg "#191724"
+		fg "#e0def4"
+		red "#eb6f92"
+		green "#31748f"
+		blue "#9ccfd8"
+		yellow "#f6c177"
+		magenta "#c4a7e7"
+		orange "#fe640b"
+		cyan "#ebbcba"
+		black "#26233a"
+		white "#e0def4"
+	}
+}
