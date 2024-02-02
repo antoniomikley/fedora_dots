@@ -1,6 +1,5 @@
 - name: Configure dnf
   hosts: localhost
-  gather_facts: false
   tasks:
     - name: Copy dnf config
       become: true
@@ -50,7 +49,7 @@
       ansible.builtin.dnf:
         name: '*gnome*'
         state: absent
-        
+
 - name: Install DisplayManager
   hosts: localhost
   gather_facts: false
@@ -68,22 +67,33 @@
   hosts: localhost
   gather_facts: false
   tasks:
-    - name: Gather package facts to see if awesome is already installed
+    - name: Gather package facts to see if i3 is already installed
       ansible.builtin.package_facts:
         manager: auto
-    - name: Install awesome window manager and dmenu
+    - name: Install i3 window manager, polybar and rofi
       become: true
-      when: "'awesome' not in ansible_facts.packages"
+      when: "'i3' not in ansible_facts.packages"
+      register: wm
       ansible.builtin.dnf:
         name: 
-          - awesome
-            lob
-          - dmenu
+          - i3
+          - polybar
+          - rofi
         state: present
-    - name: Copy awesome config
-      when: "'awesome' not in ansible_facts.packages"
+    - name: Copy i3 config
+      when: wm.changed
       ansible.builtin.copy:
-        src: ./awesome
+        src: ./i3
+        dest: ~/.config/
+    - name: Copy polybar config
+      when: wm.changed
+      ansible.builtin.copy:
+        src: ./polybar
+        dest: ~/.config/
+    - name: Copy rofi config
+      when: wm.changed
+      ansible.builtin.copy:
+        src: ./rofi
         dest: ~/.config/
 
 - name: Install nerd font
@@ -92,15 +102,41 @@
   tasks:
     - name: Create font directory
       become: true
-      register: dir
+      register: monaspace
       ansible.builtin.file:
         path: /usr/share/fonts/Monaspace
         state: directory
     - name: Download and unpack font
       become: true
-      when: dir.changed
+      when: monaspace.changed
       ansible.builtin.unarchive:
         src: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Monaspace.zip
+        dest: /usr/share/fonts/Monaspace
+        remote_src: true
+    - name: Create font directory
+      become: true
+      register: ubuntumono
+      ansible.builtin.file:
+        path: /usr/share/fonts/UbuntuMono
+        state: directory
+    - name: Download and unpack font
+      become: true
+      when: ubuntumono.changed
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/UbuntuMono.zip
+        dest: /usr/share/fonts/Monaspace
+        remote_src: true
+    - name: Create font directory
+      become: true
+      register: ubuntu
+      ansible.builtin.file:
+        path: /usr/share/fonts/Ubuntu
+        state: directory
+    - name: Download and unpack font
+      become: true
+      when: ubuntu.changed
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Ubuntu.zip
         dest: /usr/share/fonts/Monaspace
         remote_src: true
 
@@ -149,12 +185,21 @@
 - name: Setup neovim
   hosts: localhost
   gather_facts: false
-  task: 
+  tasks: 
     - name: Install neovim
       become: true
       register: nvim
       ansible.builtin.dnf:
         name: neovim
+        state: present
+    - name: Install plugin dependecies
+      become: true
+      when: nvim.changed
+      ansible.builtin.dnf:
+        name:
+          - fzf
+          - ripgrep
+          - fd-find
         state: present
     - name: Copy neovim config
       when: nvim.changed

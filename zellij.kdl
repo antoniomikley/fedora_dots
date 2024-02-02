@@ -16,7 +16,7 @@ keybinds clear-defaults=true {
 theme "oxocarbon"
 themes {
     oxocarbon {
-	fg "#dde16e"
+	fg "#dde1e6"
 	bg "#161616"
 	black "#262626"
 	red "#ff7eb6"
