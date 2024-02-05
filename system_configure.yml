@@ -268,6 +268,11 @@
       ansible.builtin.file:
         name: ~/install.sh
         state: absent
+    - name: Copy starship config
+      when: zsh.changed
+      ansible.builtin.copy:
+        src: ./starship.toml
+        dest: ~/.config/starship.toml
     - name: Copy zsh config
       when: zsh.changed
       ansible.builtin.copy:
