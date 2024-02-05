@@ -7,7 +7,6 @@
         src: ./dnf.conf
         dest: /etc/dnf/dnf.conf
 
-
 - name: Update packages
   hosts: localhost
   gather_facts: false
@@ -115,6 +114,7 @@
       ansible.builtin.copy:
         src: ./i3
         dest: ~/.config/
+        mode: preserve
     - name: Copy polybar config
       when: wm.changed
       ansible.builtin.copy:
