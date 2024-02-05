@@ -7,33 +7,6 @@
         src: ./dnf.conf
         dest: /etc/dnf/dnf.conf
 
-- name: Cleanup Packages
-  hosts: localhost
-  gather_facts: false
-  tasks:
-    - name: Cleanup system by removing unwanted packages
-      become: true
-      ansible.builtin.dnf:
-        name:
-          - ghostscript
-          - "PackageKit*"
-          - "*rygel*"
-          - baobab
-          - simple-scan
-          - mediawriter
-          - sd
-          - "malcontent*"
-          - switcheroo-control 
-          - "onboard*"
-          - rhythmbox
-          - Box2D
-          - antiword
-          - "anaconda*"
-          - "blivet*"
-          - dmenu
-          - genisoimage
-          - rxvt-unicode 
-        state: absent
 
 - name: Update packages
   hosts: localhost
@@ -64,6 +37,34 @@
       when: "'gnome-shell' in ansible_facts.packages"
       ansible.builtin.dnf:
         name: '*gnome*'
+        state: absent
+
+- name: Cleanup Packages
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Cleanup system by removing unwanted packages
+      become: true
+      ansible.builtin.dnf:
+        name:
+          - ghostscript
+          - "PackageKit*"
+          - "*rygel*"
+          - baobab
+          - simple-scan
+          - mediawriter
+          - sd
+          - "malcontent*"
+          - switcheroo-control 
+          - "onboard*"
+          - rhythmbox
+          - Box2D
+          - antiword
+          - "anaconda*"
+          - "blivet*"
+          - dmenu
+          - genisoimage
+          - rxvt-unicode 
         state: absent
 
 - name: Install important software
