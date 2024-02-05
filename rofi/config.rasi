@@ -60,7 +60,7 @@ element-text {
 window {
     margin: 0;
     padding: 0;
-    background-color: #ff000000;
+    background-color: var(bg);
     border:           0;
     font: "MonaspiceNeNerdFont 14";
 }

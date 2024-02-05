@@ -16,7 +16,23 @@
       ansible.builtin.dnf:
         name:
           - ghostscript
-          - PackageKit-command-not-found
+          - "PackageKit*"
+          - "*rygel*"
+          - baobab
+          - simple-scan
+          - mediawriter
+          - sd
+          - "malcontent*"
+          - switcheroo-control 
+          - "onboard*"
+          - rhythmbox
+          - Box2D
+          - antiword
+          - "anaconda*"
+          - "blivet*"
+          - dmenu
+          - genisoimage
+          - rxvt-unicode 
         state: absent
 
 - name: Update packages
@@ -49,6 +65,19 @@
       ansible.builtin.dnf:
         name: '*gnome*'
         state: absent
+
+- name: Install important software
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Install packages
+      become: true
+      ansible.builtin.dnf:
+        name:
+          - clang
+          - gh
+          - git
+        state: present
 
 - name: Install DisplayManager
   hosts: localhost
@@ -206,6 +235,44 @@
       ansible.builtin.copy:
         src: ./nvim
         dest: ~/.config/
+
+- name: Setup zsh
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Install zsh
+      become: true
+      register: zsh
+      ansible.builtin.dnf:
+        name: zsh
+        state: present
+    - name: Change user shell
+      become: true
+      when: zsh.changed
+      ansible.builtin.user:
+        user: "{{ ansible_user_id }}"
+        shell: /bin/zsh
+    - name: Download starship install script
+      when: zsh.changed
+      ansible.builtin.get_url:
+        url: https://starship.rs/install.sh
+        dest: ~/install.sh
+        mode: "0777"
+    - name: Run starship install
+      when: zsh.changed
+      become: true
+      ansible.builtin.command:
+        cmd: /home/"{{ ansible_user_id }}"/install.sh -y
+    - name: Remove install script
+      when: zsh.changed
+      ansible.builtin.file:
+        name: ~/install.sh
+        state: absent
+    - name: Copy zsh config
+      when: zsh.changed
+      ansible.builtin.copy:
+        src: ./.zshrc
+        dest: ~/.zshrc
 
 
 
