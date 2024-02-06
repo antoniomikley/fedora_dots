@@ -280,8 +280,23 @@
         src: ./.zshrc
         dest: ~/.zshrc
 
-
-
-
-
-
+- name: Install mdatp
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: add microsoft repo
+      become: true
+      ansible.builtin.yum_repository:
+        name: microsoft-packages
+        description: Microsofts dirty packages
+        baseurl: https://packages.microsoft.com/yumrepos/microsoft-fedora39-prod/
+    - name: Add microsoft gpg key
+      become: true
+      ansible.builtin.rpm_key:
+        key: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+    - name: Install mdatp
+      become: true
+      ansible.builtin.dnf:
+        name: mdatp
+        state: latest
