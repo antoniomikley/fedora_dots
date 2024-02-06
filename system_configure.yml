@@ -78,6 +78,14 @@
           - gh
           - git
         state: present
+    - name: Install OpenH264
+      become: true
+      ansible.builtin.dnf:
+        name:
+          - ffmpeg-free
+          - gstreamer1-plugin-openh264
+          - mozilla-openh264
+        state: present
 
 - name: Install DisplayManager
   hosts: localhost
