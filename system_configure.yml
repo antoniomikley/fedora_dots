@@ -53,7 +53,6 @@
           - simple-scan
           - mediawriter
           - sd
-          - "malcontent*"
           - switcheroo-control 
           - "onboard*"
           - rhythmbox
@@ -64,6 +63,10 @@
           - dmenu
           - genisoimage
           - rxvt-unicode 
+          - fedora-bookmarks
+          - fedora-chromium-config
+          - fedora-logos
+          - fedora-logos-httpd
         state: absent
 
 - name: Install important software
@@ -308,8 +311,9 @@
       ansible.builtin.dnf:
         name: mdatp
         state: latest
-- name: Install Microsoft Teams Flaptpak
+- name: Install flatpaks
   hosts: localhost
+  gather_facts: false
   tasks:
     - name: Install flatpak
       become: true
@@ -325,5 +329,15 @@
     - name: Install MSTeams
       become: true
       community.general.flatpak:
-        name: https://dl.flathub.org/repo/appstream/com.github.IsmaelMartinez.teams_for_linux.flatpakref
+        name: com.github.IsmaelMartinez.teams_for_linux
+        state: present
+    - name: Install Spotify
+      become: true
+      community.general.flatpak:
+        name: com.spotify.Client
+        state: present
+    - name: Install keepassxc
+      become: true
+      community.general.flatpak:
+        name: org.keepassxc.KeePassXC
         state: present
