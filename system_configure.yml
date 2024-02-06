@@ -308,3 +308,22 @@
       ansible.builtin.dnf:
         name: mdatp
         state: latest
+- name: Install Microsoft Teams Flaptpak
+  hosts: localhost
+  tasks:
+    - name: Install flatpak
+      become: true
+      ansible.builtin.dnf:
+        name: flatpak
+        state: present
+    - name: Enable flathub remote
+      become: true
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    - name: Install MSTeams
+      become: true
+      community.general.flatpak:
+        name: https://dl.flathub.org/repo/appstream/com.github.IsmaelMartinez.teams_for_linux.flatpakref
+        state: present
