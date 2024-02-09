@@ -129,6 +129,7 @@
           - polybar
           - rofi
           - neovim
+          - kitty
           - fzf
           - ripgrep
           - fd-find
