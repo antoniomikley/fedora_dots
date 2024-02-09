@@ -19,6 +19,7 @@ focus_follows_mouse no
 font pango:DejaVu Sans Mono 8
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
+exec_always --no-startup-id feh --bg-fill ~/fedora_dots/backgrounds/fedora-oxo.png
 exec --no-startup-id dex-autostart --autostart --environment i3
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
@@ -30,7 +31,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- light-locker --nofork
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
-exec --no-startup-id nm-applet
+# exec --no-startup-id nm-applet
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
