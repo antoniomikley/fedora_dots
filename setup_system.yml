@@ -1,0 +1,282 @@
+- name: Configure dnf
+  hosts: localhost
+  tasks:
+    - name: Copy dnf config
+      become: true
+      ansible.builtin.copy:
+        src: ./dnf.conf
+        dest: /etc/dnf/dnf.conf
+
+- name: Cleanup unwanted system packages
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Gather package facts to see if gnome is installed
+      ansible.builtin.package_facts:
+        manager: auto
+    - name: Remove gnome-shell from protected packages
+      become: true
+      when: "'gnome-shell' in ansible_facts.packages"
+      ansible.builtin.lineinfile:
+        path: /etc/dnf/protected.d/fedora-workstation.conf
+        search_string: "gnome-shell"
+        state: absent
+    - name: Remove all gnome packages
+      become: true
+      when: "'gnome-shell' in ansible_facts.packages"
+      ansible.builtin.dnf:
+        name: '*gnome*'
+        state: absent
+    - name: Cleanup system by removing unwanted packages
+      become: true
+      ansible.builtin.dnf:
+        name:
+          - ghostscript
+          - "PackageKit*"
+          - "*rygel*"
+          - baobab
+          - simple-scan
+          - mediawriter
+          - sd
+          - switcheroo-control 
+          - "onboard*"
+          - rhythmbox
+          - Box2D
+          - antiword
+          - "anaconda*"
+          - "blivet*"
+          - dmenu
+          - genisoimage
+          - rxvt-unicode 
+          - fedora-bookmarks
+          - fedora-chromium-config
+          - fedora-logos
+          - fedora-logos-httpd
+        state: absent
+
+- name: Update packages
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Update installed Packages
+      become: true
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+
+- name: Install nerd font
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create font directory
+      become: true
+      register: monaspace
+      ansible.builtin.file:
+        path: /usr/share/fonts/Monaspace
+        state: directory
+    - name: Download and unpack font
+      become: true
+      when: monaspace.changed
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Monaspace.zip
+        dest: /usr/share/fonts/Monaspace
+        remote_src: true
+    - name: Create font directory
+      become: true
+      register: ubuntumono
+      ansible.builtin.file:
+        path: /usr/share/fonts/UbuntuMono
+        state: directory
+    - name: Download and unpack font
+      become: true
+      when: ubuntumono.changed
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/UbuntuMono.zip
+        dest: /usr/share/fonts/Monaspace
+        remote_src: true
+    - name: Create font directory
+      become: true
+      register: ubuntu
+      ansible.builtin.file:
+        path: /usr/share/fonts/Ubuntu
+        state: directory
+    - name: Download and unpack font
+      become: true
+      when: ubuntu.changed
+      ansible.builtin.unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Ubuntu.zip
+        dest: /usr/share/fonts/Monaspace
+        remote_src: true
+
+- name: Install important software
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Install packages
+      become: true
+      ansible.builtin.dnf:
+        name:
+          - clang
+          - gh
+          - git
+          - ffmpeg-free
+          - gstreamer1-plugin-openh264
+          - mozilla-openh264
+          - lightdm
+          - light-locker
+          - slick-greeter
+          - i3
+          - polybar
+          - rofi
+          - neovim
+          - fzf
+          - ripgrep
+          - fd-find
+        state: present
+
+- name: Setup terminal multiplexer
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Enable zellij copr
+      become: true
+      community.general.copr:
+        name: varlad/zellij
+        state: enabled
+    - name: Install zellij
+      become: true
+      register: zellij
+      ansible.builtin.dnf:
+        name: zellij
+        state: present
+
+- name: Setup zsh
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Install zsh
+      become: true
+      register: zsh
+      ansible.builtin.dnf:
+        name: zsh
+        state: present
+    - name: Change user shell
+      become: true
+      when: zsh.changed
+      ansible.builtin.user:
+        user: "{{ ansible_user_id }}"
+        shell: /bin/zsh
+    - name: Download starship install script
+      when: zsh.changed
+      ansible.builtin.get_url:
+        url: https://starship.rs/install.sh
+        dest: ~/install.sh
+        mode: "0777"
+    - name: Run starship install
+      when: zsh.changed
+      become: true
+      ansible.builtin.command:
+        cmd: /home/"{{ ansible_user_id }}"/install.sh -y
+    - name: Remove install script
+      when: zsh.changed
+      ansible.builtin.file:
+        name: ~/install.sh
+        state: absent
+
+- name: Install mdatp
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: add microsoft repo
+      become: true
+      ansible.builtin.yum_repository:
+        name: microsoft-packages
+        description: Microsofts dirty packages
+        baseurl: https://packages.microsoft.com/yumrepos/microsoft-fedora39-prod/
+    - name: Add microsoft gpg key
+      become: true
+      ansible.builtin.rpm_key:
+        key: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+    - name: Install mdatp
+      become: true
+      ansible.builtin.dnf:
+        name: mdatp
+        state: latest
+
+- name: Install flatpaks
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Install flatpak
+      become: true
+      ansible.builtin.dnf:
+        name: flatpak
+        state: present
+    - name: Enable flathub remote
+      become: true
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    - name: Install MSTeams
+      become: true
+      community.general.flatpak:
+        name: com.github.IsmaelMartinez.teams_for_linux
+        state: present
+    - name: Install Spotify
+      become: true
+      community.general.flatpak:
+        name: com.spotify.Client
+        state: present
+    - name: Install keepassxc
+      become: true
+      community.general.flatpak:
+        name: org.keepassxc.KeePassXC
+        state: present
+
+- name: Ensure symlinks to config files can be created
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Remove preexisting neovim config
+      ansible.builtin.file:
+        path: ~/.config/nvim
+        state: absent
+    - name: Remove preexisting i3 config
+      ansible.builtin.file:
+        path: ~/.config/i3
+        state: absent
+    - name: Remove preexisting polybar config
+      ansible.builtin.file:
+        path: ~/.config/polybar
+        state: absent
+    - name: Remove preexisting rofi config
+      ansible.builtin.file:
+        path: ~/.config/rofi
+        state: absent
+    - name: Remove preexisting kitty config
+      ansible.builtin.file:
+        path: ~/.config/kitty
+        state: absent
+    - name: Remove preexisting zellij config
+      ansible.builtin.file:
+        path: ~/.config/zellij
+        state: absent
+    - name: Remove preexisting starship config
+      ansible.builtin.file:
+        path: ~/.config/starship.toml
+        state: absent
+    - name: Remove preexisting zsh config
+      ansible.builtin.file:
+        path: ~/.zshrc
+        state: absent
+
+- name: Put dotfiles in their place
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Run stow
+      shell: "stow -d ./dotfiles . -t {{ ansible_env.HOME }} --verbose=2"
+      register: result
+      changed_when: 'result.stderr is search("LINK: ")'

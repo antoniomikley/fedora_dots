@@ -8,8 +8,8 @@ bindkey -v
 
 alias ls="ls -1 --color=auto"
 alias sd="shutdown now"
-alias er="~/fedora_dots/zellij-sessionizer.sh"
-alias vpn="~/fedora_dots/vpn-switcher.sh"
+alias er="~/fedora_dots/scripts/zellij-sessionizer.sh"
+alias vpn="~/fedora_dots/scripts/vpn-switcher.sh"
 alias ssh="TERM=xterm ssh"
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall

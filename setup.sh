@@ -5,7 +5,7 @@ echo ""
 echo "--- Installing stow and ansible ---"
 dnf install -y stow ansible
 echo "--- Setting up with ansible ---"
-ansible-playbook ./system_configure.yml -e "ansible_become_password=$userPass"
+ansible-playbook setup_system.yml -e "ansible_become_password=$userPass"
 
 
 
