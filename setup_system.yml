@@ -134,6 +134,7 @@
           - ripgrep
           - fd-find
           - feh
+          - java-17-openjdk
         state: present
 
 - name: Setup terminal multiplexer
