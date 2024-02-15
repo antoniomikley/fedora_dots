@@ -137,6 +137,22 @@
           - java-17-openjdk
         state: present
 
+- name: Install java build system
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Make gradle directory
+      become: true
+      ansible.builtin.file:
+        path: /opt/gradle/
+        state: directory
+    - name: Download and unpack gradle
+      become: true
+      ansible.builtin.unarchive:
+        src: https://services.gradle.org/distributions/gradle-8.6-bin.zip
+        dest: /opt/gradle/
+        remote_src: true
+
 - name: Setup terminal multiplexer
   hosts: localhost
   gather_facts: false
