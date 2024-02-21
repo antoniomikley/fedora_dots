@@ -5,3 +5,4 @@ end
 local lsp = require("lspconfig")
 lsp.rust_analyzer.setup({ capabiliies = capabilities, on_attach = format })
 lsp.lua_ls.setup({ capabiliies = capabilities, on_attach = format })
+lsp.texlab.setup({ capabilities = capabilities, on_attach = format })

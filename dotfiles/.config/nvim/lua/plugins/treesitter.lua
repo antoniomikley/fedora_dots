@@ -2,7 +2,8 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         dependencies = {
-            {"nvim-treesitter/nvim-treesitter-context",
+            {
+                "nvim-treesitter/nvim-treesitter-context",
                 config = function()
                     require("treesitter-context").setup({
                         max_lines = 3,
@@ -19,6 +20,7 @@ return {
                 highlight = {
                     enable = true,
                     additional_vim_regex_highlighting = false,
+                    disable = { "latex" },
                 },
                 textobjects = {
                     select = {
@@ -33,7 +35,7 @@ return {
                         },
                         selection_modes = {
                             ['@parameter.outer'] = 'v', -- charwise
-                            ['@function.outer'] = 'V', -- linewise
+                            ['@function.outer'] = 'V',  -- linewise
                             ['@class.outer'] = '<c-v>', -- blockwise
                         },
                     },

@@ -135,6 +135,9 @@
           - fd-find
           - feh
           - java-17-openjdk
+          - zathura
+          - zathura-pdf-mupdf
+          - texlive-scheme-small
         state: present
 
 - name: Install java build system
