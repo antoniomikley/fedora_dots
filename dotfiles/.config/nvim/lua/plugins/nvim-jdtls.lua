@@ -11,10 +11,6 @@ return {
                     local project_name = vim.fn.fnamemodify(root_dir, ':p:h:t')
                     local jdtls_path = require("mason-registry").get_package("jdtls"):get_install_path()
                     local workspace_dir = os.getenv("HOME") .. "/.eclipse/workspaces/" .. project_name
-                    print("project name: " .. project_name)
-                    print("root dir: " .. root_dir)
-                    print("workspace: " .. workspace_dir)
-
                     local jar_path = string.gsub(
                         io.popen("find " .. jdtls_path .. ' -name "org.eclipse.equinox.launcher_*.jar"'):read("*a"), "\n",
                         "")
