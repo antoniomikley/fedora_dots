@@ -9,7 +9,7 @@ return {
             },
             "nvim-tree/nvim-web-devicons",
         },
-        tag = "0.1.5.",
+        branch = "0.1.x",
         config = function()
             require("telescope").setup({
                 defaults = {
