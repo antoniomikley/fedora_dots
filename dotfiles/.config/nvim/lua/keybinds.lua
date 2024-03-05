@@ -73,6 +73,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         local map = function(keys, func)
             vim.keymap.set("n", keys, func, { buffer = event.buf })
         end
+        map("K", vim.lsp.buf.hover)
         map("gd", builtin.lsp_definitions)
         map("gD", vim.lsp.buf.declaration)
         map("gr", builtin.lsp_references)
