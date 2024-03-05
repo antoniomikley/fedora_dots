@@ -64,5 +64,35 @@ set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 -- open netrw
 set("n", "<leader>.", vim.cmd.Explore, {})
 
--- code actions
-set("n", "<leader>ca", vim.lsp.buf.code_action, {})
+-- clear highlights
+set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+-- lsp keybinds
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
+    callback = function(event)
+        local map = function(keys, func)
+            vim.keymap.set("n", keys, func, { buffer = event.buf })
+        end
+        map("gd", builtin.lsp_definitions)
+        map("gD", vim.lsp.buf.declaration)
+        map("gr", builtin.lsp_references)
+        map("gI", builtin.lsp_implementations)
+        map("<leader>ds", builtin.lsp_document_symbols)
+        map("<leader>ws", builtin.lsp_dynamic_workspace_symbols)
+        map("<leader>D", builtin.lsp_type_definitions)
+        map("<leader>rn", vim.lsp.buf.rename)
+        map("<leader>ca", vim.lsp.buf.code_action)
+
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if client and client.server_capabilities.documentHighlightProvider then
+            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+                buffer = event.buf,
+                callback = vim.lsp.buf.document_highlight,
+            })
+            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+                buffer = event.buf,
+                callback = vim.lsp.buf.clear_references,
+            })
+        end
+    end,
+})
