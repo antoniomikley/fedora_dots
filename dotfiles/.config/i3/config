@@ -19,7 +19,7 @@ focus_follows_mouse no
 font pango:DejaVu Sans Mono 8
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
-exec_always --no-startup-id feh --bg-fill ~/fedora_dots/backgrounds/fedora-oxo.png
+exec_always --no-startup-id feh --bg-fill ~/fedora_dots/backgrounds/win-oxo.png
 exec --no-startup-id dex-autostart --autostart --environment i3
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
@@ -89,9 +89,6 @@ bindsym $mod+v split v
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
