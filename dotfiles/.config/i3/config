@@ -44,6 +44,7 @@ tiling_drag modifier titlebar
 bindsym $mod+Return exec $term
 bindsym $mod+b exec $browser
 bindsym $mod+Shift+p exec "light-locker-command -l"
+bindsym $mod+p exec "flameshot gui"
 
 # kill focused window
 bindsym $mod+q kill
@@ -165,3 +166,4 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 exec_always --no-startup-id ~/.config/i3/polybar.sh &
+exec xset s off -dpms
