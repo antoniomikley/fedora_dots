@@ -2,6 +2,7 @@
 HISTFILE=~/.zsh_history
 HISTSIZE=2500
 SAVEHIST=2500
+EDITOR=/usr/bin/nvim
 setopt nomatch
 unsetopt beep
 bindkey -v
