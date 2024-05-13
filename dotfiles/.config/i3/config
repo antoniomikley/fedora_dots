@@ -21,6 +21,8 @@ font pango:DejaVu Sans Mono 8
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec_always --no-startup-id feh --bg-fill ~/fedora_dots/backgrounds/win-oxo.png
 exec --no-startup-id dex-autostart --autostart --environment i3
+exec dbus-update-activation-environment --all
+exec gnome-keyring_daemon --start --components=secrets
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
